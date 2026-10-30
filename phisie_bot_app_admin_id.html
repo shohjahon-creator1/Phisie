@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Phisie Bot</title>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EDF1F7;--card:#fff;--ink:#0B1730;--muted:#6B7A90;--line:#E3E9F1;--blue:#0A5CFF;--pink:#EE1580;--red:#D6293E;--ok:#12805C;--okbg:#DDF3EA;--wait:#9A5B00;--waitbg:#FDEFD2;--badbg:#FADDE1;--bar:#0F1B2E;--track:#E3E9F1;--sh:0 8px 24px -14px rgba(11,23,48,.3)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#09101B;--card:#121C2B;--ink:#E8EEF7;--muted:#93A3B8;--line:#22314A;--blue:#4C8DFF;--pink:#FF5BA8;--red:#FF6B7D;--ok:#4FD1A1;--okbg:#12392D;--wait:#F2C46B;--waitbg:#3A2E10;--badbg:#45161E;--bar:#060B13;--track:#22314A;--sh:0 8px 24px -14px #000}}
+:root[data-theme="dark"]{--bg:#09101B;--card:#121C2B;--ink:#E8EEF7;--muted:#93A3B8;--line:#22314A;--blue:#4C8DFF;--pink:#FF5BA8;--red:#FF6B7D;--ok:#4FD1A1;--okbg:#12392D;--wait:#F2C46B;--waitbg:#3A2E10;--badbg:#45161E;--bar:#060B13;--track:#22314A;--sh:0 8px 24px -14px #000}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.45 "Onest",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.app{max-width:520px;margin:0 auto;min-height:100vh;padding-bottom:120px}
+.top{position:sticky;top:0;z-index:5;background:var(--bar);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top,0px))}
+.top h1{font-size:20px;margin:0;font-weight:800;letter-spacing:-.01em}
+.ic{background:none;border:1px solid #ffffff33;color:#fff;border-radius:10px;width:42px;height:38px;font-size:17px;cursor:pointer}
+.view{padding:18px 16px;display:none}.view.on{display:block}
+h2{font-size:26px;margin:6px 0 16px;font-weight:800;letter-spacing:-.02em}
+h4{margin:0 0 10px;font-size:17px}
+.card{background:var(--card);border-radius:22px;padding:18px 20px;box-shadow:var(--sh);margin-bottom:14px}
+.row{display:flex;gap:14px}.row>.card{flex:1;margin-bottom:14px;min-width:0}
+.lbl{font-weight:700;font-size:15px}
+.big{font-size:34px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.blue{color:var(--blue)}.pink{color:var(--pink)}.muted{color:var(--muted);font-size:14px}
+.bar{height:10px;border-radius:99px;background:var(--track);overflow:hidden;margin:10px 0 6px}.bar i{display:block;height:100%;background:var(--blue);border-radius:99px;transition:width .4s}
+.btn{border:0;border-radius:16px;padding:15px 22px;font:700 16px inherit;font-family:inherit;color:#fff;background:var(--blue);cursor:pointer}
+.btn.pk{background:var(--pink)}.btn.red{background:var(--red)}.btn.ghost{background:var(--line);color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}.btn.sm{padding:10px 14px;font-size:14px;border-radius:12px}
+.avatar{width:110px;height:110px;border-radius:50%;border:4px solid var(--blue);margin:8px auto 10px;display:grid;place-items:center;font-size:44px;font-weight:800;background:var(--card)}
+.name{text-align:center;font-size:26px;font-weight:800;margin-bottom:18px}
+.task{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.task>div:first-child{min-width:0}.task b{display:block;overflow-wrap:anywhere}.task .r{font-weight:800;color:var(--blue);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip{border-radius:99px;padding:8px 12px;font:700 13px inherit;font-family:inherit;white-space:nowrap;display:inline-block}
+.chip.w{background:var(--waitbg);color:var(--wait)}.chip.o{background:var(--okbg);color:var(--ok)}.chip.b{background:var(--badbg);color:var(--red)}
+.menu{padding:6px 20px}.menu button{display:flex;align-items:center;gap:16px;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:16px 0;font:700 17px inherit;font-family:inherit;color:var(--ink);text-align:left;cursor:pointer}
+.menu button:last-child{border:0}.mi{width:42px;height:42px;border-radius:12px;background:var(--bar);color:#fff;display:grid;place-items:center;font-size:18px}
+.link{background:var(--bg);border-radius:14px;padding:14px;font-size:14px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:12px 0}
+.btns{display:flex;gap:12px;flex-wrap:wrap}.btns .btn{flex:1}
+.lvl{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.lvl:last-child{border:0}
+.lvl.cur{color:var(--blue);font-weight:800}
+.seg{display:flex;border:1.5px solid var(--line);border-radius:14px;overflow:hidden;margin-top:10px}
+.seg button{flex:1;background:none;border:0;color:var(--muted);font:700 15px inherit;font-family:inherit;padding:12px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--blue);color:#fff}
+.tabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px}
+.tabs button{flex:none;border:0;border-radius:99px;padding:10px 16px;font:700 14px inherit;font-family:inherit;background:var(--card);color:var(--ink);cursor:pointer}
+.tabs button.on{background:var(--blue);color:#fff}
+.badge{background:var(--pink);color:#fff;border-radius:99px;font-size:12px;padding:1px 7px;margin-left:5px}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;padding:0 16px calc(14px + env(safe-area-inset-bottom,0px));pointer-events:none}
+nav div{pointer-events:auto;display:flex;justify-content:space-around;width:100%;max-width:488px;background:var(--card);border-radius:26px;box-shadow:0 10px 34px -10px rgba(11,23,48,.45);padding:10px 6px}
+nav button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;font:700 12.5px inherit;font-family:inherit;color:var(--ink);cursor:pointer;padding:4px 8px;min-width:76px}
+nav button span{font-size:24px;line-height:1}nav button.on{color:var(--blue)}
+dialog{border:0;border-radius:22px;padding:22px;width:min(92vw,440px);background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+dialog::backdrop{background:#0008}
+dialog h3{margin:0 0 6px;font-size:21px}
+textarea,input{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:13px;font:500 16px inherit;font-family:inherit;background:var(--bg);color:var(--ink);margin:6px 0}
+textarea{min-height:100px;resize:vertical}
+label.f{display:block;font-weight:700;font-size:14px;margin-top:8px}
+.toast{position:fixed;left:50%;top:76px;transform:translate(-50%,-20px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:700;opacity:0;transition:.25s;z-index:20;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.sub{background:var(--bg);border-radius:12px;padding:10px 12px;margin:8px 0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top"><div><h1>Phisie Bot</h1><small id="db-status" style="display:block;font-size:11px;color:#ffd166;margin-top:2px">Supabase: ulanmoqda…</small></div><button class="ic" id="theme" aria-label="Theme">◐</button></div>
+  <div id="v-tasks" class="view"></div>
+  <div id="v-friends" class="view"></div>
+  <div id="v-profile" class="view"></div>
+  <div id="v-admin" class="view"></div>
+</div>
+<nav><div id="nav"></div></nav>
+<dialog id="dlg"></dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+const BOT_USERNAME="PhisieBot";            // botingiz username'i
+const LEVELS=[0,3,10];                       // daraja chegaralari (tasdiqlangan ishlar soni)
+const T={
+uz:{nav:["Topshiriqlar","Do‘stlar","Profil"],cur:"so‘m",tasks:"Topshiriqlar",bal:"Balans",do:"Bajarish",retry:"Qayta yuborish",wait:"Tekshiruvda",ok:"Qabul qilindi",bad:"Rad etildi",
+ empty:"Hozircha topshiriq yo‘q. Keyinroq qaytib keling.",sendT:"Natijani yozing",sendP:"Matn yozing yoki izoh qoldiring. Admin tekshirib qabul qiladi.",send:"Yuborish",cancel:"Bekor qilish",sent:"Yuborildi. Admin tekshiradi.",
+ profile:"Profil",user:"Foydalanuvchi",level:"Daraja",done:"Bajarilgan topshiriqlar",invited:"Taklif qilingan do‘stlar",earned:"Jami ishlangan",tsk:"topshiriq",
+ wd:"Yechish",wdNeed:"Yechish uchun minimal summa: ",wdOk:"Yechish mumkin. Komissiya yo‘q.",wdTitle:"Pul yechish",wdAmt:"Summa",wdDet:"Karta raqami yoki rekvizit",wdSend:"So‘rov yuborish",wdSent:"So‘rov yuborildi. Summa band qilindi.",wdBad:"Summa yoki rekvizit noto‘g‘ri.",
+ hist:"Topshiriqlar tarixi",terms:"Shartlar",histEmpty:"Hali topshiriq yo‘q.",wdH:"Yechish so‘rovlari",
+ termsT:["Oldindan to‘lov yo‘q.","Mukofot faqat admin tasdiqlagandan keyin yoziladi.","Yechish uchun komissiya olinmaydi. Rad etilsa summa qaytariladi.","Do‘st taklif qilish ixtiyoriy.","Telegram paroli, SMS-kod va karta CVV kodini hech kim so‘ramaydi."],
+ langT:"Til",adm:"Admin panel",
+ friends:"Do‘stlar",myLink:"Sizning havolangiz",share:"Ulashish",copy:"Nusxalash",copied:"Nusxalandi",bonus:"Do‘st uchun bonus",bonusP:"Taklif qilgan do‘stingizning birinchi topshirig‘i qabul qilinganda beriladi. Bu majburiy emas.",levels:"Darajalar",lv:"daraja"},
+ru:{nav:["Задания","Друзья","Профиль"],cur:"сум",tasks:"Задания",bal:"Баланс",do:"Выполнить",retry:"Отправить снова",wait:"На проверке",ok:"Принято",bad:"Отклонено",
+ empty:"Пока заданий нет. Загляните позже.",sendT:"Напишите результат",sendP:"Напишите текст или комментарий. Админ проверит и примет.",send:"Отправить",cancel:"Отмена",sent:"Отправлено. Админ проверит.",
+ profile:"Профиль",user:"Пользователь",level:"Уровень",done:"Заданий выполнено",invited:"Друзей приглашено",earned:"Всего заработано",tsk:"заданий",
+ wd:"Вывод",wdNeed:"Минимальная сумма вывода: ",wdOk:"Вывод доступен. Без комиссии.",wdTitle:"Вывод средств",wdAmt:"Сумма",wdDet:"Номер карты или реквизиты",wdSend:"Отправить запрос",wdSent:"Запрос отправлен. Сумма зарезервирована.",wdBad:"Неверная сумма или реквизиты.",
+ hist:"История заданий",terms:"Условия",histEmpty:"Заданий пока нет.",wdH:"Запросы на вывод",
+ termsT:["Предоплаты нет.","Награда зачисляется только после проверки админом.","За вывод комиссии нет. При отказе сумма возвращается.","Приглашать друзей необязательно.","Пароль Telegram, SMS-код и CVV карты не спрашивает никто."],
+ langT:"Язык",adm:"Админ-панель",
+ friends:"Друзья",myLink:"Ваша ссылка",share:"Поделиться",copy:"Скопировать",copied:"Скопировано",bonus:"Бонус за друга",bonusP:"Начисляется, когда первое задание приглашённого друга принято. Это необязательно.",levels:"Уровни",lv:"уровень"},
+en:{nav:["Tasks","Friends","Profile"],cur:"UZS",tasks:"Tasks",bal:"Balance",do:"Do it",retry:"Send again",wait:"In review",ok:"Approved",bad:"Rejected",
+ empty:"No tasks yet. Please check back later.",sendT:"Write your result",sendP:"Write text or a comment. An admin will review it.",send:"Submit",cancel:"Cancel",sent:"Sent. An admin will review it.",
+ profile:"Profile",user:"User",level:"Level",done:"Tasks completed",invited:"Friends invited",earned:"Total earned",tsk:"tasks",
+ wd:"Withdraw",wdNeed:"Minimum withdrawal: ",wdOk:"Withdrawal available. No fee.",wdTitle:"Withdraw funds",wdAmt:"Amount",wdDet:"Card number or payment details",wdSend:"Send request",wdSent:"Request sent. Amount is held.",wdBad:"Invalid amount or details.",
+ hist:"Task history",terms:"Terms",histEmpty:"No tasks yet.",wdH:"Withdrawal requests",
+ termsT:["No upfront payment.","The reward is credited only after an admin approves.","No withdrawal fee. If rejected, the amount is returned.","Inviting friends is optional.","Nobody needs your Telegram password, SMS code or card CVV."],
+ langT:"Language",adm:"Admin panel",
+ friends:"Friends",myLink:"Your link",share:"Share",copy:"Copy",copied:"Copied",bonus:"Bonus per friend",bonusP:"Paid when your invited friend’s first task is approved. Not required.",levels:"Levels",lv:"level"}};
+
+// ---------- ma'lumotlar (brauzer xotirasi) ----------
+const DEF=()=>({seq:3,tasks:[
+ {id:1,title:"Mahsulot rasmini tasvirlash",desc:"Uydagi biror buyumni tanlab, 3 ta jumlada tasvirlab bering.",reward:15000,active:true},
+ {id:2,title:"Ilova sharhini yozish",desc:"Ilovani sinab, qisqa sharh yozing.",reward:20000,active:true}],
+ subs:[],wds:[],u:{bal:0,earned:0,done:0,invited:0},cfg:{min:10000,bonus:3000,pin:"1234"}});
+const ls={g(k){try{return localStorage.getItem(k)}catch(e){return null}},s(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+// Supabase ulanish sozlamalari. Faqat publishable kalit ishlating; secret/service_role kalitini HTMLga qo'ymang.
+const SUPABASE_URL="https://ojlxnfbefkyfbornbtdo.supabase.co";
+const SUPABASE_KEY="sb_publishable_lMh9tETHVkfqg4XAHBk36A_hIUZDlJ5";
+const sbHeaders={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
+async function sbGet(table,query="select=*"){
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`,{headers:sbHeaders});
+  if(!r.ok) throw new Error(`${table}: ${r.status} ${await r.text()}`);
+  return r.json();
+}
+async function checkSupabase(){
+  const el=document.getElementById('db-status');
+  if(!currentTelegramId()){el.textContent='Telegram ichida oching';el.style.color='#ffd166';}
+  try{ await sbGet('tasks','select=*&limit=1'); el.textContent='Supabase: ulandi'; el.style.color='#7ee7b1'; }
+  catch(e){ el.textContent='Supabase: ulanish/policy tekshiring'; el.style.color='#ffd166'; console.warn('Supabase ulanish xatosi:',e.message); }
+}
+let D;try{D=JSON.parse(ls.g("phisie_v1"))||DEF()}catch(e){D=DEF()}
+const save=()=>{ls.s("phisie_v1",JSON.stringify(D));};
+
+const $=s=>document.querySelector(s), x=()=>T[lang], esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let lang="uz", view="tasks", adminOn=false, aTab="tasks", editId=null;
+const money=n=>Number(n).toLocaleString("ru-RU").replace(/\u00a0/g," ")+" "+x().cur;
+const lvl=()=>LEVELS.filter(n=>D.u.done>=n).length;
+const taskById=id=>D.tasks.find(t=>t.id===id);
+const lastSub=id=>[...D.subs].reverse().find(s=>s.taskId===id);
+function toast(m){const e=$("#toast");e.textContent=m;e.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.remove("on"),2600)}
+const chip=(c,t)=>`<span class="chip ${c}">${t}</span>`;
+
+function render(){
+  const L=x(); document.documentElement.lang=lang;
+  const names=["tasks","friends","profile"], ic=["📋","👥","👤"];
+  $("#nav").innerHTML=L.nav.map((n,i)=>`<button data-view="${names[i]}" class="${view===names[i]?"on":""}"><span>${ic[i]}</span>${n}</button>`).join("");
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+view));
+  document.querySelector("nav").style.display=view==="admin"?"none":"flex";
+
+  // topshiriqlar
+  const act=D.tasks.filter(t=>t.active);
+  $("#v-tasks").innerHTML=`<h2>${L.tasks}</h2><div class="card"><div class="lbl">${L.bal}</div><div class="big blue">${money(D.u.bal)}</div></div>`+
+   (act.length?act.map(t=>{const s=lastSub(t.id),st=s?s.status:"";
+     const right=st==="pending"?chip("w",L.wait):st==="approved"?chip("o",L.ok):`<div style="text-align:right">${st==="rejected"?chip("b",L.bad)+"<br><br>":""}<button class="btn sm" data-do="${t.id}">${st==="rejected"?L.retry:L.do}</button></div>`;
+     return `<div class="card task"><div><b>${esc(t.title)}</b><span class="muted">${esc(t.desc)}</span><div class="r">${money(t.reward)}</div></div>${right}</div>`}).join(""):`<div class="card muted">${L.empty}</div>`);
+
+  // do'stlar
+  const link=`https://t.me/${BOT_USERNAME}?start=123456`;
+  $("#v-friends").innerHTML=`<h2>${L.friends}</h2>
+   <div class="card"><div class="lbl" style="text-align:center">${L.myLink}</div><div class="link">${link}</div><div class="btns"><button class="btn" data-share>${L.share}</button><button class="btn pk" data-copy>${L.copy}</button></div></div>
+   <div class="row"><div class="card"><div class="lbl">${L.invited}</div><div class="big pink" style="font-size:28px">${D.u.invited}</div></div>
+    <div class="card"><div class="lbl">${L.bonus}</div><div class="big pink" style="font-size:24px">${money(D.cfg.bonus)}</div></div></div>
+   <div class="card muted">${L.bonusP}</div>
+   <div class="card"><div class="lbl" style="margin-bottom:6px">${L.levels}</div>`+LEVELS.map((n,i)=>`<div class="lvl ${lvl()===i+1?"cur":""}"><span>${i+1} ${L.lv}</span><span>${n}+ ${L.tsk}</span></div>`).join("")+`</div>`;
+
+  // profil
+  const lv=lvl(), nxt=LEVELS[lv]??null, base=LEVELS[lv-1], pct=nxt===null?100:Math.min(100,Math.round((D.u.done-base)/(nxt-base)*100)), can=D.u.bal>=D.cfg.min;
+  $("#v-profile").innerHTML=`<h2>${L.profile}</h2><div class="avatar">P</div><div class="name">${L.user}</div>
+   <div class="row"><div class="card"><div class="lbl">${L.level} ${lv}</div><div class="bar"><i style="width:${pct}%"></i></div><span class="muted">${D.u.done} ${L.tsk}</span></div>
+    <div class="card"><div class="lbl">${L.done}</div><div class="big blue">${D.u.done}</div></div></div>
+   <div class="row"><div class="card"><div class="lbl">${L.invited}</div><div class="big pink">${D.u.invited}</div></div>
+    <div class="card"><div class="lbl">${L.earned}</div><div class="big pink" style="font-size:26px">${money(D.u.earned)}</div></div></div>
+   <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><div class="lbl">${L.bal}</div><div class="big">${money(D.u.bal)}</div></div><button class="btn" data-wd ${can?"":"disabled"}>${L.wd}</button></div>
+    <div class="${can?"muted":"pink"}" style="margin-top:10px;font-size:14px">${can?L.wdOk:L.wdNeed+money(D.cfg.min)}</div></div>
+   <div class="card"><div class="lbl">${L.langT}</div><div class="seg" role="group">${["uz","ru","en"].map(l=>`<button data-lang="${l}" aria-pressed="${l===lang}">${l.toUpperCase()}</button>`).join("")}</div></div>
+   <div class="card menu"><button data-hist><span class="mi">🧾</span>${L.hist}</button><button data-terms><span class="mi">📄</span>${L.terms}</button>${isAdminTelegram()?`<button data-admin><span class="mi">🛠</span>${L.adm}</button>`:""}</div>`;
+  renderAdmin();
+}
+
+// ---------- admin panel (o'zbek tilida) ----------
+function renderAdmin(){
+  if(view!=="admin")return;
+  if(!isAdminTelegram()){view="profile";adminOn=false;return;}
+  const pend=D.subs.filter(s=>s.status==="pending"), wp=D.wds.filter(w=>w.status==="pending");
+  const tabs=[["tasks","Topshiriqlar"],["review","Tekshiruv"+(pend.length?`<span class="badge">${pend.length}</span>`:"")],["wd","Yechish"+(wp.length?`<span class="badge">${wp.length}</span>`:"")],["stats","Statistika"],["set","Sozlamalar"]];
+  let h=`<h2>Admin panel</h2><div class="btns" style="margin-bottom:14px"><button class="btn ghost sm" data-exit>← Ilovaga qaytish</button></div>
+   <div class="tabs">${tabs.map(t=>`<button data-atab="${t[0]}" class="${aTab===t[0]?"on":""}">${t[1]}</button>`).join("")}</div>`;
+  const e=editId?taskById(editId):null;
+  if(aTab==="tasks"){
+    h+=`<div class="card"><h4>${e?"Topshiriqni tahrirlash":"Yangi topshiriq"}</h4>
+     <label class="f">Nomi</label><input id="tt" value="${esc(e?.title)}" placeholder="Masalan: Mahsulot rasmini yuborish">
+     <label class="f">Nima qilish kerak</label><textarea id="td" placeholder="Foydalanuvchiga ko‘rsatma">${esc(e?.desc)}</textarea>
+     <label class="f">Mukofot (so‘m)</label><input id="tr" inputmode="numeric" value="${e?e.reward:""}" placeholder="15000">
+     <div class="btns" style="margin-top:10px"><button class="btn" data-savetask>${e?"Saqlash":"Qo‘shish"}</button>${e?`<button class="btn ghost" data-canceledit>Bekor</button>`:""}</div></div>`;
+    h+=D.tasks.length?D.tasks.map(t=>`<div class="card"><div class="task"><div><b>${esc(t.title)}</b><span class="muted">${esc(t.desc)}</span><div class="r">${money(t.reward)}</div></div>${t.active?chip("o","Faol"):chip("w","O‘chiq")}</div>
+      <div class="btns" style="margin-top:12px"><button class="btn sm ghost" data-edit="${t.id}">Tahrirlash</button><button class="btn sm ghost" data-toggle="${t.id}">${t.active?"O‘chirib qo‘yish":"Yoqish"}</button><button class="btn sm red" data-del="${t.id}">O‘chirish</button></div></div>`).join(""):`<div class="card muted">Hali topshiriq yo‘q. Yuqorida qo‘shing.</div>`;
+  }
+  if(aTab==="review"){
+    h+=pend.length?pend.map(s=>{const t=taskById(s.taskId);return `<div class="card"><b>${esc(t?t.title:"(o‘chirilgan)")}</b> <span class="muted">· ${t?money(t.reward):""}</span><div class="sub">${esc(s.text)}</div>
+      <div class="btns"><button class="btn sm" data-ap="${s.id}">✅ Qabul</button><button class="btn sm red" data-rj="${s.id}">❌ Rad</button></div></div>`}).join(""):`<div class="card muted">Tekshiruvni kutayotgan ish yo‘q.</div>`;
+  }
+  if(aTab==="wd"){
+    h+=wp.length?wp.map(w=>`<div class="card"><div class="big" style="font-size:26px">${money(w.amount)}</div><div class="sub">${esc(w.details)}</div>
+      <div class="btns"><button class="btn sm" data-wpaid="${w.id}">✅ To‘landi</button><button class="btn sm red" data-wrej="${w.id}">❌ Rad (qaytarish)</button></div></div>`).join(""):`<div class="card muted">Kutayotgan yechish so‘rovi yo‘q.</div>`;
+    h+=`<div class="muted" style="padding:0 6px">Haqiqiy o‘tkazmani o‘zingiz bajarib, keyin “To‘landi” ni bosing.</div>`;
+  }
+  if(aTab==="stats"){
+    const paid=D.wds.filter(w=>w.status==="paid").reduce((a,w)=>a+w.amount,0);
+    h+=`<div class="card">${[["Faol topshiriqlar",D.tasks.filter(t=>t.active).length],["Tekshiruvda",pend.length],["Qabul qilingan ishlar",D.subs.filter(s=>s.status==="approved").length],["Rad etilgan",D.subs.filter(s=>s.status==="rejected").length],["Jami to‘langan",money(paid)],["Foydalanuvchi balansi",money(D.u.bal)]].map(r=>`<div class="lvl"><span>${r[0]}</span><b>${r[1]}</b></div>`).join("")}</div>`;
+  }
+  if(aTab==="set"){
+    h+=`<div class="card"><h4>Sozlamalar</h4><label class="f">Minimal yechish summasi</label><input id="sm" inputmode="numeric" value="${D.cfg.min}">
+     <label class="f">Do‘st uchun bonus (0 = o‘chiq)</label><input id="sb" inputmode="numeric" value="${D.cfg.bonus}">
+     <label class="f">Admin PIN</label><input id="sp" value="${esc(D.cfg.pin)}">
+     <div class="btns" style="margin-top:10px"><button class="btn" data-saveset>Saqlash</button></div></div>
+     <div class="card"><div class="muted">Supabase ulanishi tekshiriladi, lekin foydalanuvchi ma’lumotlarini jadvallarga to‘liq sinxronlash uchun ustunlar va RLS siyosatlari mos bo‘lishi kerak. Admin menyusi Telegram ID bilan cheklanadi. Muhim: haqiqiy ma’lumotlar xavfsizligi uchun Supabase RLS siyosatlari ham sozlanishi shart.</div><div class="btns" style="margin-top:10px"><button class="btn red sm" data-reset>Hamma ma’lumotni tozalash</button></div></div>`;
+  }
+  $("#v-admin").innerHTML=h;
+}
+
+// ---------- hodisalar ----------
+const dlg=$("#dlg");
+const openDlg=h=>{dlg.innerHTML=h;dlg.showModal()};
+const num=id=>parseInt(String($(id).value).replace(/\D/g,""),10)||0;
+document.addEventListener("click",ev=>{
+  const g=s=>ev.target.closest(s), L=x();
+  const d=(k)=>{const el=g(`[data-${k}]`);return el?el.dataset[k]:null};
+  if(g("#theme")){const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark";ls.s("theme",r.dataset.theme);return}
+  if(g("[data-lang]")){lang=d("lang");ls.s("lang",lang);render();return}
+  if(g("[data-view]")){view=d("view");render();scrollTo(0,0);return}
+  if(g("[data-close]")){dlg.close();return}
+  // foydalanuvchi
+  if(g("[data-do]")){const t=taskById(+d("do"));if(!t)return;
+    openDlg(`<h3>${esc(t.title)}</h3><div class="muted">${esc(t.desc)}</div><textarea id="res" placeholder="${L.sendT}"></textarea><div class="btns"><button class="btn" data-submit="${t.id}">${L.send}</button><button class="btn ghost" data-close>${L.cancel}</button></div>`);return}
+  if(g("[data-submit]")){const v=$("#res").value.trim();if(!v){$("#res").focus();return}
+    D.subs.push({id:D.seq++,taskId:+d("submit"),text:v,status:"pending",ts:Date.now()});save();dlg.close();render();toast(L.sent);return}
+  if(g("[data-wd]")){openDlg(`<h3>${L.wdTitle}</h3><div class="muted">${L.wdOk}</div><input id="amt" inputmode="numeric" placeholder="${L.wdAmt} (${D.cfg.min}–${D.u.bal})"><input id="det" placeholder="${L.wdDet}">
+    <div class="btns"><button class="btn" data-wdsend>${L.wdSend}</button><button class="btn ghost" data-close>${L.cancel}</button></div>`);return}
+  if(g("[data-wdsend]")){const a=num("#amt"),det=$("#det").value.trim();if(a<D.cfg.min||a>D.u.bal||!det){toast(L.wdBad);return}
+    D.u.bal-=a;D.wds.push({id:D.seq++,amount:a,details:det,status:"pending"});save();dlg.close();render();toast(L.wdSent);return}
+  if(g("[data-hist]")){const st={pending:chip("w",L.wait),approved:chip("o",L.ok),rejected:chip("b",L.bad),paid:chip("o",L.ok)};
+    const a=[...D.subs].reverse().map(s=>`<div class="lvl"><span>${esc(taskById(s.taskId)?.title||"—")}</span>${st[s.status]}</div>`).join("");
+    const b=[...D.wds].reverse().map(w=>`<div class="lvl"><span>${money(w.amount)}</span>${st[w.status]}</div>`).join("");
+    openDlg(`<h3>${L.hist}</h3>${a||`<p class="muted">${L.histEmpty}</p>`}${b?`<h4 style="margin-top:14px">${L.wdH}</h4>${b}`:""}<div class="btns" style="margin-top:14px"><button class="btn" data-close>OK</button></div>`);return}
+  if(g("[data-terms]")){openDlg(`<h3>${L.terms}</h3>${L.termsT.map(s=>`<p>• ${s}</p>`).join("")}<div class="btns"><button class="btn" data-close>OK</button></div>`);return}
+  if(g("[data-copy]")||g("[data-share]")){const l=`https://t.me/${BOT_USERNAME}?start=123456`;
+    if(g("[data-share]")&&navigator.share){navigator.share({url:l}).catch(()=>{});return}
+    try{navigator.clipboard.writeText(l)}catch(_){}toast(L.copied);return}
+  // admin kirish
+  if(g("[data-admin]")){if(!isAdminTelegram()){toast("Admin faqat Telegram orqali ochiladi");return}adminOn=true;view="admin";render();scrollTo(0,0);return}
+  if(g("[data-pinok]")){return}
+  if(g("[data-exit]")){view="profile";render();return}
+  // admin amallar
+  if(g("[data-atab]")){aTab=d("atab");editId=null;render();return}
+  if(g("[data-savetask]")){const title=$("#tt").value.trim(),desc=$("#td").value.trim(),r=num("#tr");
+    if(!title||!desc||r<=0){toast("Nomi, tavsif va mukofotni to‘ldiring");return}
+    if(editId){Object.assign(taskById(editId),{title,desc,reward:r});editId=null}else D.tasks.unshift({id:D.seq++,title,desc,reward:r,active:true});
+    save();render();toast("Saqlandi");return}
+  if(g("[data-edit]")){editId=+d("edit");render();scrollTo(0,0);return}
+  if(g("[data-canceledit]")){editId=null;render();return}
+  if(g("[data-toggle]")){const t=taskById(+d("toggle"));t.active=!t.active;save();render();return}
+  if(g("[data-del]")){if(confirm("Topshiriq o‘chirilsinmi?")){D.tasks=D.tasks.filter(t=>t.id!==+d("del"));save();render()}return}
+  if(g("[data-ap]")||g("[data-rj]")){const ap=!!g("[data-ap]"),s=D.subs.find(s=>s.id===+(ap?d("ap"):d("rj")));
+    if(!s||s.status!=="pending")return;
+    if(ap){const t=taskById(s.taskId),r=t?t.reward:0;s.status="approved";D.u.bal+=r;D.u.earned+=r;D.u.done++}else s.status="rejected";
+    save();render();toast(ap?"Qabul qilindi":"Rad etildi");return}
+  if(g("[data-wpaid]")||g("[data-wrej]")){const paid=!!g("[data-wpaid]"),w=D.wds.find(w=>w.id===+(paid?d("wpaid"):d("wrej")));
+    if(!w||w.status!=="pending")return;
+    if(paid)w.status="paid";else{w.status="rejected";D.u.bal+=w.amount}
+    save();render();toast(paid?"To‘langan deb belgilandi":"Rad etildi, summa qaytarildi");return}
+  if(g("[data-saveset]")){const m=num("#sm"),b=num("#sb"),p=$("#sp").value.trim();if(m<=0||!p){toast("Qiymatlarni tekshiring");return}
+    D.cfg={min:m,bonus:b,pin:p};save();render();toast("Saqlandi");return}
+  if(g("[data-reset]")){if(confirm("Barcha ma’lumot o‘chadi. Davom etasizmi?")){D=DEF();save();adminOn=false;view="profile";render()}return}
+});
+dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close()});
+
+const th=ls.g("theme");if(th)document.documentElement.dataset.theme=th;
+const sl=ls.g("lang"),nl=(navigator.language||"").slice(0,2);lang=T[sl]?sl:(T[nl]?nl:"uz");
+try{window.Telegram&&Telegram.WebApp&&(Telegram.WebApp.ready(),Telegram.WebApp.expand())}catch(_){}
+render();
+checkSupabase();
+</script>
+</body>
+</html>
